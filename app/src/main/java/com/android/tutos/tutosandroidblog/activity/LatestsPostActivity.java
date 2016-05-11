@@ -13,6 +13,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.android.tutos.tutosandroidblog.R;
 import com.android.tutos.tutosandroidblog.adapters.LatestPostsAdapter;
+import com.android.tutos.tutosandroidblog.adapters.RxSchedulers;
 import com.android.tutos.tutosandroidblog.api.APIProvider;
 import com.android.tutos.tutosandroidblog.api.APIServices;
 import com.android.tutos.tutosandroidblog.model.Article;
@@ -60,7 +61,7 @@ public class LatestsPostActivity extends AbstractActivity {
     private void loadRecentArticles() {
         mContentLoader.show();
         Observable<RecentPosts> call = service.loadRecentArticles();
-        this.subscription = call.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<RecentPosts>() {
+        this.subscription = call.compose(new RxSchedulers<RecentPosts>().<RecentPosts>applySchedulers()).subscribe(new Subscriber<RecentPosts>() {
             @Override
             public void onCompleted() {
                 mContentLoader.hide();
